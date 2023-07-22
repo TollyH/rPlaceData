@@ -4,7 +4,6 @@ import os
 from matplotlib import pyplot
 from tqdm import tqdm
 
-CANVAS_SIZE = (2000, 2000)
 PLACE_SECONDS_PER_LINE_POINT = 96  # 4 days = 3600 points
 TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
 
