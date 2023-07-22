@@ -1,5 +1,4 @@
 import datetime
-import os
 
 from matplotlib import pyplot
 from tqdm import tqdm
@@ -12,9 +11,6 @@ time_since_last_point = datetime.timedelta()
 
 graph_times: list[datetime.datetime] = []
 graph_points: list[int] = []
-
-if not os.path.exists("images"):
-    os.mkdir("images")
 
 # CSV must be pre-sorted with header removed for this program to work
 with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:

@@ -1,5 +1,3 @@
-import os
-
 from tqdm import tqdm
 
 CANVAS_SIZE = (2000, 2000)
@@ -9,9 +7,6 @@ TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
 pixel_update_counts: dict[tuple[int, int], int] = {
     (x, y): 0 for x in range(CANVAS_SIZE[0]) for y in range(CANVAS_SIZE[1])
 }
-
-if not os.path.exists("images"):
-    os.mkdir("images")
 
 # CSV must be pre-sorted with header removed for this program to work
 with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
