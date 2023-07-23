@@ -63,12 +63,12 @@ with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
                 > PLACE_SECONDS_PER_VIDEO_FRAMES):
             time_since_last_frame = datetime.timedelta()
             image = Image.fromarray(canvas, "RGB")  # type: ignore
-            image.save(os.path.join("images", f"{images_saved:09d}.png"))
+            image.save(os.path.join("images", f"{images_saved:09d}.bmp"))
             images_saved += 1
 
 if time_since_last_frame.total_seconds() != 0:
     # There are leftover changes that didn't make it into the final frame.
     # Save them now.
     image = Image.fromarray(canvas, "RGB")  # type: ignore
-    image.save(os.path.join("images", f"{images_saved:09d}.png"))
+    image.save(os.path.join("images", f"{images_saved:09d}.bmp"))
     images_saved += 1

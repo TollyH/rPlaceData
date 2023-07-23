@@ -54,4 +54,4 @@ for (x, y), count in tqdm(pixel_update_counts.items()):
     )
 
 image = Image.fromarray(canvas, "RGB")  # type: ignore
-image.save("heatmap.png")
+image.save("heatmap.bmp")
