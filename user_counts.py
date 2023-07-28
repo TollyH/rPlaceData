@@ -1,11 +1,11 @@
 from tqdm import tqdm
 
-TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
+TOTAL_PLACEMENTS = 132224375  # Value for 2023, used for progress bar
 
 user_place_counts: dict[str, int] = {}
 
-# CSV must be pre-sorted with header removed for this program to work
-with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
+# CSVs must be concatenated with headers removed for this program to work
+with open("2023_place_canvas_history.csv", encoding="utf8") as file:
     for line in tqdm(file, total=TOTAL_PLACEMENTS):
         split = line.replace('"', '').split(",")
         user_id = split[1]
