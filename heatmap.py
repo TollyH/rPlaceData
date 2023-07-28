@@ -5,7 +5,9 @@ from numpy.typing import NDArray
 from PIL import Image
 from tqdm import tqdm
 
-CANVAS_SIZE = (2000, 2000)
+CANVAS_SIZE = (3000, 2000)
+X_OFFSET = 1500
+Y_OFFSET = 1000
 PIXEL_COUNT = CANVAS_SIZE[0] * CANVAS_SIZE[1]  # Used for progress bar
 
 COLD_COLOR = (0, 0, 255)
@@ -14,8 +16,8 @@ HOT_COLOR = (255, 0, 0)
 # 2D array of pixels
 canvas: NDArray[numpy.uint8] = numpy.array(
     [
-        [(255, 255, 255)] * CANVAS_SIZE[1]
-        for _ in range(CANVAS_SIZE[0])
+        [(255, 255, 255)] * CANVAS_SIZE[0]
+        for _ in range(CANVAS_SIZE[1])
     ],
     dtype=numpy.uint8
 )
@@ -54,4 +56,4 @@ for (x, y), count in tqdm(pixel_update_counts.items()):
     )
 
 image = Image.fromarray(canvas, "RGB")  # type: ignore
-image.save("heatmap.bmp")
+image.save("heatmap.png")
