@@ -4,12 +4,12 @@ from matplotlib import pyplot
 from tqdm import tqdm
 
 PLACE_SECONDS_PER_LINE_POINT = 96  # 4 days = 3600 points
-TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
+TOTAL_PLACEMENTS = 132224375  # Value for 2023, used for progress bar
 
 graph_points: list[datetime.datetime] = []
 
-# CSV must be pre-sorted with header removed for this program to work
-with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
+# CSVs must be concatenated with headers removed for this program to work
+with open("2023_place_canvas_history.csv", encoding="utf8") as file:
     for line in tqdm(file, total=TOTAL_PLACEMENTS):
         # Parse line data
         split = line.replace('"', '').split(",")
@@ -25,7 +25,7 @@ with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
 
 print("Generating histogram...")
 pyplot.hist(graph_points, bins=96)  # type: ignore
-pyplot.title("Placed Pixels By Time in r/place 2022")  # type: ignore
+pyplot.title("Placed Pixels By Time in r/place 2023")  # type: ignore
 pyplot.ylabel("Pixels")  # type: ignore
 pyplot.xlabel("Time")  # type: ignore
 pyplot.savefig("pixels_histogram.png", dpi=300)  # type: ignore

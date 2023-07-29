@@ -4,7 +4,7 @@ from matplotlib import pyplot
 from tqdm import tqdm
 
 PLACE_SECONDS_PER_LINE_POINT = 96  # 4 days = 3600 points
-TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
+TOTAL_PLACEMENTS = 132224375  # Value for 2023, used for progress bar
 
 last_placement_time = datetime.datetime(1, 1, 1)
 time_since_last_point = datetime.timedelta()
@@ -13,8 +13,8 @@ already_seen_users: set[str] = set()
 graph_times: list[datetime.datetime] = []
 graph_points: list[int] = []
 
-# CSV must be pre-sorted with header removed for this program to work
-with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
+# CSVs must be concatenated with headers removed for this program to work
+with open("2023_place_canvas_history.csv", encoding="utf8") as file:
     for line in tqdm(file, total=TOTAL_PLACEMENTS):
         # Parse line data
         split = line.replace('"', '').split(",")
@@ -48,7 +48,7 @@ if time_since_last_point.total_seconds() != 0:
     graph_points.append(len(already_seen_users))
 
 pyplot.plot(graph_times, graph_points)  # type: ignore
-pyplot.title("Unique Users Over Time in r/place 2022")  # type: ignore
+pyplot.title("Unique Users Over Time in r/place 2023")  # type: ignore
 pyplot.ylabel("Users")  # type: ignore
 pyplot.xlabel("Time")  # type: ignore
 pyplot.savefig("users_over_time.png", dpi=300)  # type: ignore
