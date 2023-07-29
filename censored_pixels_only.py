@@ -4,24 +4,27 @@ import os
 import numpy
 from numpy.typing import NDArray
 from PIL import Image
+from skimage.draw import disk
 from tqdm import tqdm
 
-CANVAS_SIZE = (2000, 2000)
+CANVAS_SIZE = (3000, 2000)
+X_OFFSET = 1500
+Y_OFFSET = 1000
 PLACE_SECONDS_PER_VIDEO_FRAMES = 96  # 4 days = 3600 frames (60s at 60 fps)
-TOTAL_PLACEMENTS = 160353104  # Value for 2022, used for progress bar
+TOTAL_PLACEMENTS = 132224375  # Value for 2023, used for progress bar
 
 # 2D array of pixels
 full_canvas: NDArray[numpy.uint8] = numpy.array(
     [
-        [(255, 255, 255)] * CANVAS_SIZE[1]
-        for _ in range(CANVAS_SIZE[0])
+        [(255, 255, 255)] * CANVAS_SIZE[0]
+        for _ in range(CANVAS_SIZE[1])
     ],
     dtype=numpy.uint8
 )
 masked_canvas: NDArray[numpy.uint8] = numpy.array(
     [
-        [(255, 255, 255)] * CANVAS_SIZE[1]
-        for _ in range(CANVAS_SIZE[0])
+        [(255, 255, 255)] * CANVAS_SIZE[0]
+        for _ in range(CANVAS_SIZE[1])
     ],
     dtype=numpy.uint8
 )
@@ -33,8 +36,8 @@ time_since_last_frame = datetime.timedelta()
 if not os.path.exists("images"):
     os.mkdir("images")
 
-# CSV must be pre-sorted with header removed for this program to work
-with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
+# CSVs must be concatenated with headers removed for this program to work
+with open("2023_place_canvas_history.csv", encoding="utf8") as file:
     for line in tqdm(file, total=TOTAL_PLACEMENTS):
         # Parse line data
         split = line.replace('"', '').split(",")
@@ -47,17 +50,28 @@ with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
                 split[0], "%Y-%m-%d %H:%M:%S.%f UTC"
             )
         user_id = split[1]
-        # Convert hex string to tuple of three 0..255 values
-        color = tuple(int(split[2][i + 1:i + 3], 16) for i in (0, 2, 4))
         if len(split) == 5:
-            coordinate = (int(split[3]), int(split[4]))
+            coordinate = (int(split[2]) + X_OFFSET, int(split[3]) + Y_OFFSET)
             admin_rect = False
+            admin_circle = False
+        elif len(split) == 6:
+            # Admin circle drawing tool
+            coordinate = (
+                int(split[2][3:]) + X_OFFSET, int(split[3][3:]) + Y_OFFSET,
+                int(split[4][3:-1])
+            )
+            admin_rect = False
+            admin_circle = True
         else:
             # Admin rectangle drawing tool
             coordinate = (
-                int(split[3]), int(split[4]), int(split[5]), int(split[6])
+                int(split[2]) + X_OFFSET, int(split[3]) + Y_OFFSET,
+                int(split[4]) + X_OFFSET, int(split[5]) + Y_OFFSET
             )
             admin_rect = True
+            admin_circle = False
+        # Convert hex string to tuple of three 0..255 values
+        color = tuple(int(split[-1][i + 1:i + 3], 16) for i in (0, 2, 4))
 
         # Process line data
         time_since_last_frame += timestamp - last_placement_time
@@ -72,6 +86,11 @@ with open("2022_place_canvas_history.sorted.csv", encoding="utf8") as file:
                 coordinate[1]:coordinate[3] + 1,
                 coordinate[0]:coordinate[2] + 1
             ]
+        elif admin_circle:
+            assert len(coordinate) == 3
+            circle = disk(  # type: ignore
+                (coordinate[1], coordinate[0]), coordinate[2])
+            masked_canvas[circle] = full_canvas[circle]  # type: ignore
         else:
             assert len(coordinate) == 2
             full_canvas[coordinate[1], coordinate[0]] = color
